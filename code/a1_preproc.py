@@ -32,13 +32,17 @@ def preproc1(comment, steps=range(1, 5)):
     if 4 in steps:  # remove duplicate spaces
         modComm = re.sub(r"(\s)\s+", " ", modComm)
 
-    # TODO: get Spacy document for modComm
-    
-    # TODO: use Spacy document for modComm to create a string.
-    # Make sure to:
-    #    * Insert "\n" between sentences.
-    #    * Split tokens with spaces.
-    #    * Write "/POS" after each token.
+    # get Spacy document for modComm
+    doc = nlp(modComm)
+
+    # use Spacy document for modComm to create a string.
+    modComm = ''
+    for sent in doc.sents:
+        for token in sent:
+            string = token.text if token.lemma_[0] == '-' else token.lemma_
+            modComm += string + '/' + token.tag_ + ' '
+        modComm.rstrip()
+        modComm += '\n'
         
     return modComm
 
