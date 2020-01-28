@@ -4,6 +4,7 @@ import os
 import json
 import re
 import spacy
+import html
 
 
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
@@ -11,7 +12,7 @@ sentencizer = nlp.create_pipe("sentencizer")
 nlp.add_pipe(sentencizer)
 
 
-def preproc1(comment , steps=range(1, 5)):
+def preproc1(comment, steps=range(1, 5)):
     ''' This function pre-processes a single comment
 
     Parameters:                                                                      
@@ -25,11 +26,11 @@ def preproc1(comment , steps=range(1, 5)):
     if 1 in steps:  # replace newlines with spaces
         modComm = re.sub(r"\n{1,}", " ", modComm)
     if 2 in steps:  # unescape html
-        print("TODO")
+        modComm = html.unescape(modComm)
     if 3 in steps:  # remove URLs
         modComm = re.sub(r"(http|www)\S+", "", modComm)
     if 4 in steps:  # remove duplicate spaces
-        print('TODO')
+        modComm = re.sub(r"(\s)\s+", " ", modComm)
 
     # TODO: get Spacy document for modComm
     
@@ -54,11 +55,11 @@ def main(args):
             # TODO: select appropriate args.max lines
             # TODO: read those lines with something like `j = json.loads(line)`
             # TODO: choose to retain fields from those lines that are relevant to you
-            # TODO: add a field to each selected line called 'cat' with the value of 'file' (e.g., 'Alt', 'Right', ...) 
+            # TODO: add a field to each selected line called 'cat' with the value of 'file' (e.g., 'Alt', 'Right', ...)
             # TODO: process the body field (j['body']) with preproc1(...) using default for `steps` argument
             # TODO: replace the 'body' field with the processed text
             # TODO: append the result to 'allOutput'
-            
+
     fout = open(args.output, 'w')
     fout.write(json.dumps(allOutput))
     fout.close()
