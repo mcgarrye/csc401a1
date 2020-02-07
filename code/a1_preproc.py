@@ -41,8 +41,7 @@ def preproc1(comment, steps=range(1, 5)):
         for token in sent:
             string = token.text if token.lemma_[0] == '-' else token.lemma_
             modComm += string + '/' + token.tag_ + ' '
-        modComm.rstrip()
-        modComm += '\n'
+        modComm = modComm[:len(modComm)-1] + '\n'
         
     return modComm
 
@@ -55,14 +54,18 @@ def main(args):
             print( "Processing " + fullFile)
 
             data = json.load(open(fullFile))
-
-            # TODO: select appropriate args.max lines
-            # TODO: read those lines with something like `j = json.loads(line)`
-            # TODO: choose to retain fields from those lines that are relevant to you
-            # TODO: add a field to each selected line called 'cat' with the value of 'file' (e.g., 'Alt', 'Right', ...)
-            # TODO: process the body field (j['body']) with preproc1(...) using default for `steps` argument
-            # TODO: replace the 'body' field with the processed text
-            # TODO: append the result to 'allOutput'
+            # select appropriate args.max lines
+            line = args.ID[0] % len(data)
+            for _ in range(args.max):
+                if line == len(data):
+                    line = 0
+                # read those lines with something like `j = json.loads(line)`
+                j = json.loads(data[line])
+                # create new json with the needed fields and matching data
+                new_json = {'id': j['id'], 'body': preproc1(j['body']), 'cat': file}
+                # append the result to 'allOutput'
+                allOutput.append(new_json)
+                line = line + 1
 
     fout = open(args.output, 'w')
     fout.write(json.dumps(allOutput))
