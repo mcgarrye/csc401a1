@@ -39,7 +39,7 @@ def preproc1(comment, steps=range(1, 5)):
     modComm = ''
     for sent in doc.sents:
         for token in sent:
-            string = token.text if token.lemma_[0] == '-' else token.lemma_
+            string = token.text.replace(" ", "") if token.lemma_[0] == '-' else token.lemma_.replace(" ", "")
             modComm += string + '/' + token.tag_ + ' '
         modComm = modComm[:len(modComm)-1] + '\n'
         
